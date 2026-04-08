@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bank Cheque Verification | Real-time AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif;}
+body {
+    min-height: 100vh;
+    background-image: url('{% static "images/bg.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #111;
+}
+.overlay {
+    min-height: 100vh;
+    background: linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.45));
+    backdrop-filter: blur(4px);
+}
+
+/* NAVBAR */
+.navbar {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:22px 70px;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.navbar-brand { font-size: 1.7rem; font-weight: 700; }
+.navbar ul { list-style:none; display:flex; gap: 25px; }
+.navbar ul li a {
+    text-decoration:none;
+    color:#1d1d1f;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:10px;
+    transition:0.25s;
+}
+.navbar ul li a:hover { background: rgba(0,0,0,0.05); }
+.navbar ul li a.active { background: rgba(0,122,255,0.15); color:#007aff; font-weight:600; }
+
+.navbar ul li a.active { background: rgba(0,122,255,0.15); color:#007aff; font-weight:600; }
+
+@media (max-width: 600px) {
+    .navbar {
+        position: sticky; top: 0; left: 0; right: 0;
+        flex-direction: column;
+        padding: 8px 0;
+        z-index: 2000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .navbar-brand { display: block; font-size: 0.9rem; margin-bottom: 5px; text-align: center; }
+    .navbar ul { display: grid; grid-template-columns: repeat(5, 1fr); width: 100%; border-top: 1px solid #eee; }
+    .navbar ul li a { display: flex; flex-direction: column; font-size: 0.6rem; padding: 6px 0; gap: 2px; }
+    .navbar ul li a i { font-size: 1rem; }
+    .navbar ul li a.active { background: #f0f7ff; border-bottom: 3px solid #007aff; border-top: none; }
+
+    .container { width: 100% !important; margin: 10px 0 !important; padding: 15px !important; border-radius: 0 !important; }
+    .results-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .res-img-container { width: 100% !important; height: auto !important; }
+    .res-img-container img { width: 100% !important; height: auto !important; }
+    .info-card { width: 100% !important; box-sizing: border-box; }
+}
+
+/* MAIN CARD */
+.container {
+    max-width: 950px;
+    margin: 70px auto;
+    padding: 45px;
+    background: rgba(255,255,255,0.88);
+    border-radius: 26px;
+    box-shadow: 0 30px 85px rgba(0,0,0,0.18);
+}
+
+/* UPLOAD BOX */
+.upload-box {
+    padding: 25px;
+    background: rgba(255,255,255,0.55);
+    border: 2px dashed #ffbf00;
+    border-radius: 18px;
+    color: #333;
+    text-align:center;
+    transition: 0.3s;
+}
+.upload-box:hover {
+    background: rgba(255,255,255,0.8);
+    border-color: #ffdd55;
+}
+
+/* BUTTON */
+.btn {
+    background: linear-gradient(90deg, #ffbf00, #ffdd57);
+    color:black;
+    padding:14px 25px;
+    border:none;
+    width:100%;
+    border-radius:14px;
+    font-size:1.2rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+.btn:hover {
+    letter-spacing:1px;
+    background: linear-gradient(90deg, #ffd43b, #ffe680);
+}
+
+/* OUTPUT BADGE */
+.result-badge {
+    padding:14px 28px;
+    border-radius: 40px;
+    font-size:1.4rem;
+    font-weight:700;
+    color:white;
+    box-shadow:0 0 18px rgba(0,0,0,0.3);
+}
+.result-success {
+    background: linear-gradient(45deg, #0fa312, #22dd44);
+    box-shadow: 0 0 15px rgba(34,221,68,0.7);
+}
+.result-error {
+    background: linear-gradient(45deg, #c70000, #ff4d4d);
+    box-shadow: 0 0 15px rgba(255,77,77,0.6);
+}
+
+/* TABLE */
+table {
+    width:100%;
+    margin-top:25px;
+    border-collapse: collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+}
+th {
+    background:#ffbf00;
+    padding:14px;
+    color:black;
+    font-size:1.1rem;
+    text-align:left;
+}
+td {
+    padding:12px;
+    border-bottom:1px solid #eee;
+    color:#222;
+}
+
+/* IMAGE */
+.preview-img {
+    width:100%;
+    margin-top:12px;
+    border-radius:18px;
+    border:4px solid #ffbf00;
+    box-shadow:0 8px 25px rgba(0,0,0,0.18);
+}
+    /* LOADING OVERLAY */
+    #loading-overlay {
+        display:none;
+        position:fixed;
+        top:0; left:0; width:100%; height:100%;
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #ffbf00;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+</style>
+</head>
+
+<body>
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <h2 style="font-weight:700; color:#333;">Processing Cheque...</h2>
+    <p style="color:#666; margin-top:10px;">Our AI is validating and extracting details. Please wait.</p>
+</div>
+
+<div class="overlay">
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-brand">🏦 Bank Cheque Verification</div>
+    <ul>
+        <li><a href="{%url 'userhome'%}"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="{%url 'ChequeSamples'%}"><i class="fa-solid fa-chart-line"></i> Samples</a></li>
+        <li><a href="{%url 'model_evaluation'%}"><i class="fa-solid fa-microscope"></i> Eval</a></li>
+        <li><a href="{%url 'prediction'%}" class="active"><i class="fa-solid fa-display"></i> Verify</a></li>
+        <li><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i> Out</a></li>
+    </ul>
+</nav>
+
+<!-- MAIN CARD -->
+<div class="container">
+
+    <h1 style="text-align:center; font-size:2.2rem; font-weight:700; margin-bottom:30px;">
+        Cheque Verification & Information Extraction
+    </h1>
+
+    <!-- UPLOAD FORM -->
+    <form id="cheque-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label style="font-weight:600; font-size:1.1rem;">Upload Cheque Image</label>
+        <br><br>
+
+        <div class="upload-box" id="drop-zone" onclick="document.getElementById('id_image').click();">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size:3rem; color:#ffbf00; margin-bottom:15px;"></i>
+            <p style="font-weight:500; color:#555;">Click to select or drag & drop a cheque image here</p>
+            <div style="display:none;">
+                {{ form.image }}
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn">Manual Process</button>
+    </form>
+
+    <!-- SHOW ERROR -->
+    {% if error %}
+        <div style="margin-top:20px; padding:15px; background:#ffe0e0; color:#c00; border-radius:12px; border:1px solid #ffcccc; text-align:center; font-weight:600;">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+        </div>
+    {% endif %}
+
+    <!-- SHOW IMAGE -->
+    {% if uploaded_image %}
+        <div style="margin-top:40px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="font-size:1.6rem; font-weight:700;">Processed Document</h2>
+                {% if output %}
+                    <span class="result-badge 
+                        {% if 'VALID' in output %}
+                            result-success
+                        {% else %}
+                            result-error
+                        {% endif %}
+                    ">{{ output }}</span>
+                {% endif %}
+            </div>
+            <img src="{{ uploaded_image }}" class="preview-img">
+        </div>
+    {% endif %}
+
+    <!-- DETAILS TABLE -->
+    {% if details %}
+        <div style="margin-top:40px; animation: fadeInUp 0.5s ease-out;">
+            <h2 style="font-size:1.6rem; font-weight:700; margin-bottom:15px;">
+                <i class="fa-solid fa-list-check" style="color:#ffbf00;"></i> Extracted Details
+            </h2>
+
+            <table>
+                <tr><th>Field</th><th>Extracted Value</th></tr>
+                <tr><td><i class="fa-solid fa-user"></i> Payee Name</td><td style="font-weight:600;">{{ details.payee_name|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-quote-left"></i> Amount (Words)</td><td>{{ details.amount_words|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-hashtag"></i> Amount (Number)</td><td style="font-weight:700; color:#007aff;">{{ details.amount_number|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-credit-card"></i> Account Number</td><td>{{ details.account_number|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-building-columns"></i> IFSC Code</td><td>{{ details.ifsc_code|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-file-invoice"></i> Cheque Number</td><td>{{ details.cheque_number|default:"N/A" }}</td></tr>
+                <tr><td><i class="fa-solid fa-signature"></i> Signature Remarks</td><td>
+                    <span style="padding:4px 10px; border-radius:6px; background:#f0f0f0; font-size:0.9rem;">
+                        {{ details.signature_remarks|default:"N/A" }}
+                    </span>
+                </td></tr>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+
+</div>
+
+<script>
+    const fileInput = document.getElementById('id_image');
+    const form = document.getElementById('cheque-form');
+    const overlay = document.getElementById('loading-overlay');
+
+    if(fileInput) {
+        fileInput.onchange = function() {
+            if(this.files && this.files[0]) {
+                overlay.style.display = 'flex';
+                form.submit();
+            }
+        };
+    }
+
+    form.onsubmit = function() {
+        if(fileInput.files && fileInput.files[0]) {
+            overlay.style.display = 'flex';
+        }
+    };
+</script>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</body>
+</html>

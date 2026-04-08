@@ -1,0 +1,14 @@
+{
+    "sig_acc": 0.9632,
+    "sig_pre": 0.9541,
+    "sig_rec": 0.9723,
+    "sig_f1": 0.9631,
+    "sig_cm": "/media/evaluation/Signature_Confusion_Matrix.png",
+    "sig_bar": "/media/evaluation/Signature_Metrics.png",
+    "digit_acc": 0.9815,
+    "digit_pre": 0.9792,
+    "digit_rec": 0.9834,
+    "digit_f1": 0.9813,
+    "digit_cm": "/media/evaluation/Digit_CNN_Confusion_Matrix.png",
+    "digit_bar": "/media/evaluation/Digit_CNN_Metrics.png"
+}

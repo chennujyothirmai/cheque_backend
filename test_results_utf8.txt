@@ -1,0 +1,9 @@
+﻿
+Testing key: AIzaSyDmZ22YZofRf3NeYsJSIswrDXXCyTcmcRU
+FAILED: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+
+Testing key: AIzaSyCghyHFi8DWSy026L1jB_OEmd-QWcSezCY
+FAILED: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+
+Testing key: AIzaSyALNXMUxpVnDQ9-jVlVo02rXjLC0hwCSy0
+FAILED: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.

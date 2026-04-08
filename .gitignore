@@ -1,0 +1,30 @@
+# IDE
+.vscode/
+.idea/
+
+# Environment
+venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3
+
+# ALL Media Folders (Ignore everything by default)
+media/*
+
+# EXCEPT for these essential ones (Whitelist)
+!media/samples_showcase/
+!media/evaluation/
+!media/signature_model/
+!media/digit_cnn.pth
+
+# Also ignore other specific heavy folders if they exist
+cheque_data/
+minist/
+mnist/
+digits_dataset/
